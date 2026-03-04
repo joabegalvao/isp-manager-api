@@ -1,0 +1,46 @@
+services:
+  api:
+    container_name: isp-manager-api
+    build: .
+    env_file:
+      - ./.env
+    ports:
+      - "3011:3011"
+    depends_on:
+      - db
+    networks:
+      - isp-manager
+    command: npm run start:dev
+    develop:
+      watch:
+        - action: sync
+          path: .
+          target: /usr/src/app
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
+  db:
+    container_name: isp-manager-db
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME} 
+      MYSQL_USER: ${DB_USER} 
+      MYSQL_PASSWORD: ${DB_PASSWORD} 
+    ports:
+      - "3309:3306" 
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - isp-manager
+
+networks:
+  isp-manager:
+    external: true
+
+volumes:
+  db-data:
