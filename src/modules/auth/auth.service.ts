@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
@@ -29,8 +29,17 @@ export class AuthService {
       groupId: user.groupId
     };
 
+    const userPermissions = user.group?.permissions?.map(p => p.name) || [];
+    
     return {
       access_token: this.jwtService.sign(payload),
+      user: {
+        id: user.id,
+        username: user.username,
+        groupId: user.groupId,
+        active: user.active,
+        permissions: userPermissions
+      }
     };
   }
 }

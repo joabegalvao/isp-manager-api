@@ -9,11 +9,11 @@ export class Permission extends Model {
     allowNull: false,
     unique: true,
   })
-  name: string; // Ex: 'ticket:create'
+  declare name: string; 
 
   @Column(DataType.STRING)
-  description: string;
+  declare description: string;
 
   @BelongsToMany(() => Group, () => GroupPermission)
-  groups: Group[];
+  declare groups: Group[];
 }

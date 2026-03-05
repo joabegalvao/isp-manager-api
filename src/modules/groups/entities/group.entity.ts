@@ -16,5 +16,5 @@ export class Group extends Model {
   declare users: User[];
 
   @BelongsToMany(() => Permission, () => GroupPermission)
-  permissions: Permission[];
+  declare permissions: Permission[];
 }

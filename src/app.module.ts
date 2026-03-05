@@ -12,10 +12,17 @@ import { AuthModule } from './modules/auth/auth.module';
 import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { APP_GUARD } from '@nestjs/core/constants';
 import { PermissionsGuard } from './modules/auth/guards/permissions.guard';
+import { SeedService } from './database/seed.service';
+import { ClientsModule } from './modules/clients/clients.module';
+import { Client } from './modules/clients/entities/client.entity';
+import { WarehousesModule } from './modules/warehouses/warehouses.module';
+import { Warehouse } from './modules/warehouses/entities/warehouse.entity';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     SequelizeModule.forRoot({
       dialect: 'mysql',
       host: process.env.DB_HOST,
@@ -23,7 +30,7 @@ import { PermissionsGuard } from './modules/auth/guards/permissions.guard';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      models: [User, Group, Permission, GroupPermission],
+      models: [User, Group, Permission, GroupPermission, Client, Warehouse],
       autoLoadModels: true,
       synchronize: true,
       sync: { alter: true },
@@ -32,12 +39,16 @@ import { PermissionsGuard } from './modules/auth/guards/permissions.guard';
         underscored: true,
       },
     }),
+    SequelizeModule.forFeature([User, Group, Permission]),
     UsersModule,
     GroupsModule,
     PermissionsModule,
     AuthModule,
+    ClientsModule,
+    WarehousesModule,
   ],
   providers: [
+    SeedService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard, 

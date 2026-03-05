@@ -10,5 +10,5 @@ export class GroupPermission extends Model {
 
   @ForeignKey(() => Permission)
   @Column
-  permissionId: number;
+  declare permissionId: number;
 }
